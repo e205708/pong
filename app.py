@@ -11,8 +11,8 @@ class View:
     def __init__(self,screen):
         self.screen = screen
         self.sprites = {}
-        self.sprites["bar"] = pygame.image.load("sprites/bar.png")
-        self.sprites["ball"] = pygame.image.load("sprites/ball.png")
+        self.sprites["bar"] = pygame.image.load("sprites/bar_small.png")
+        self.sprites["ball"] = pygame.image.load("sprites/ball_small.png")
         #self.sprites["block"] = pygame.image.load("block.png")
         #self.sprites["special_block"] = pygame.image.load("special_block.png")
         #self.sprites["speed_item"] = pygame.image.load("speed_item.png")

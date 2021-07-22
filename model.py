@@ -74,6 +74,13 @@ class Bar(Visible):
 
     #バーの座標に制限をもうける。バーを動かせるならTrueを返す
     def can_move(self):
+        if self.x_pos < -3:
+            self.x_pos = self.x_pos + 5
+            return False
+        if 603 < self.x_pos:
+            self.x_pos = self.x_pos - 5
+            return False
+
         return True
 
     #バーを動かしていいなら、プラス方向へ進める
@@ -129,7 +136,6 @@ class Model:
         self.view = view
         self.blocks = []
         self.bar = None
-        self.ball = None
         self.visibles = []
 
     #Controllerで呼び出す.
@@ -166,10 +172,11 @@ class Model:
         return
 
     #バーとボールが接触したかの判定とその場合の処理を書く。updateで呼び出す
-    def interact_bar_ball(self):
-        #ここで接触したかも判定するつもり。
+    def interact_bar_ball(self,bar,ball):
         #もし接触していたら、
-        self.ball.turn_y()
+        if bar.x_pos < ball.x_pos < bar.x_pos + 100:
+            if  bar.y_pos  < ball.y_pos + 30 < bar.y_pos + 20:
+                ball.turn_y()
 
     #バーとアイテムが接触したかの判定とその場合の処理を書く。updateで呼び出す
     def interact_bar_item(self,item):
@@ -184,13 +191,16 @@ class Model:
             return
 
     #壁とボールが接触したかの判定とその場合の処理を書く。updateで呼び出す
-    def interact_wall_ball(self):
-        #左右の壁に衝突したなら
-        self.ball.turn_x()
+    def interact_wall_ball(self,ball):
+        
+        if ball.x_pos < 5 or 695 < ball.x_pos:#左右の壁に衝突したなら
+            ball.turn_x()
         #上の壁に衝突したなら
-        self.ball.turn_y()
+        if  ball.y_pos < 5 :
+            ball.turn_y()
         #下の壁に衝突したなら消す
-        self.ball.delete()
+        if 795 < ball.y_pos:
+            ball.delete()
 
     #title画面を作る
     def make_title(self):
@@ -202,8 +212,8 @@ class Model:
         self.sort_visual_order()
     
     def make_game_play(self):
-        self.bar = Bar(10,600,"bar",(300,300),10,5)
-        self.ball = Ball(10,10,"ball",(300,300),0,0)
+        self.bar = Bar(10,700,"bar",(100,20),10,5)
+        self.ball = Ball(200,200,"ball",(30,30),1,1)
         self.visibles.append(self.bar)
         self.visibles.append(self.ball)
 
@@ -217,12 +227,6 @@ class Model:
                 self.visibles[0] = e
                 self.visibles.append(temp)
 
-    '''
-    ページ切り替えの関数を作ってもいいかも。
-    プレイ画面からクリア画面へ行こうとしたら。
-    クリアしたら、現在のvisiblesを全部removeして、
-    クリア画面に必要なvisibleを作ってしまうような関数。
-    '''
 
     #おそらく、毎秒呼び出すような。そんな感じの処理をまとめる。
     def update(self):
@@ -234,10 +238,12 @@ class Model:
 
             #ここにボールに関する、毎回実行した方が良いようなものをまとめおく
             if v.get_name() == "ball":
-                #self.interact_bar_ball()
+                v.move()
+                self.interact_bar_ball(self.bar,v)
                 #self.interact_block_ball()
-                #self.interact_wall_ball()
-                a = 1 #テストで書いているだけ
+                self.interact_wall_ball(v)
+                
+               
             
             #ここにアイテムに関する、毎回実行した方が良さそうなものをまとめておく
             if v.get_name() == "item":
