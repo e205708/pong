@@ -1,6 +1,6 @@
 
 class Visible:
-    #初期化、name,visual_nameはstring、x_pos、y_posは左上をさすはずです
+    #初期化、name,visual_nameはstring、x_pos、y_posは左上をさす
     def __init__(self,init_x_pos,init_y_pos,name,size):
         self.is_appear = True
         self.init_x_pos = init_x_pos
@@ -10,13 +10,8 @@ class Visible:
         self.name = name
         self.size = size
 
-    #is_apeerを切り替えて表示されないようにする
     def delete(self):
-        self.is_appear = False
-
-    #is_apperを切り替えて表示されるようにする（必要？）
-    def appear(self):
-        self.is_appear = True
+        self.is_appear = False #is_apperをFalseにすることでvisiblesから削除される
 
     def get_x_pos(self):
         return self.x_pos
@@ -29,17 +24,17 @@ class Visible:
 
 class Ball(Visible):
 
-    #x_speedとy_speedが追加されています
+    #x_speedとy_speedが追加
     def __init__(self, init_x_pos, init_y_pos, name, size,x_speed,y_speed):
         super().__init__(init_x_pos, init_y_pos, name, size)
         self.x_speed = x_speed
         self.y_speed = y_speed
 
-    #xの移動方向を変える。ぶつかった際に使用
+    #xの移動方向を変える
     def turn_x(self):
         self.x_speed = -self.x_speed
 
-    #yの移動方向を変える。ぶつかった際に使用
+    #yの移動方向を変える
     def turn_y(self):
         self.y_speed = -self.y_speed
 
@@ -58,7 +53,7 @@ class Ball(Visible):
 class Item(Ball):
     
     #アイテムは下に落ちるだけなのでx_speedを0にする
-    #item_typeはitemの種類を表しています。最初はクラスで分けていたけどなんか・・・汚いので
+    #item_typeはitemの種類を表しています。
     #種類はspeedup,twin,biggerの３種類です。main関数のinteractなんたらーで利用しています。
     def __init__(self, init_x_pos, init_y_pos, name, size, x_speed, y_speed,item_type):
         super().__init__(init_x_pos, init_y_pos, name, size, x_speed, y_speed)
@@ -71,7 +66,7 @@ class Item(Ball):
 
 class Bar(Visible):
 
-    #lengthとx_speedを追加した。
+    #lengthとx_speedを追加。
     def __init__(self, init_x_pos, init_y_pos, name, size, length, x_speed):
         super().__init__(init_x_pos, init_y_pos, name, size)
         self.length = length
@@ -83,12 +78,12 @@ class Bar(Visible):
 
     #バーを動かしていいなら、プラス方向へ進める
     def move_right(self):
-        if self.can_move:
+        if self.can_move():
             self.x_pos += self.x_speed
 
     #バーを動かしていいなら、マイナス方向へ進める
     def move_left(self):
-        if self.can_move:
+        if self.can_move():
             self.x_pos -= self.x_speed
 
     def set_length(self,length):
@@ -100,7 +95,7 @@ class Block(Visible):
         super().__init__(init_x_pos, init_y_pos, name,size)
         self.item = None
 
-    #itemを持っているかどうか？
+    #itemを持っているかどうか
     def has_item(self):
         if self.item == None:
             return False
@@ -114,28 +109,10 @@ class Block(Visible):
     def get_item_type(self):
         return self.item.get_item_type()
 
-'''
-このゲームではボタンを押すと画面遷移が行われる。
-なので、引数として、各画面を表す文字を持っておく（２つ）
-例えば、メイン画面からゲーム画面へいくボタンを作るのであれば。
-Button("title","game_play")とする。
-で、before_screen = "title",next_screen = "game_play"などとしておき、
-ボタンを押されたら。view.now_screen = next_screenとする。
-とすれば、ボタンないに画面遷移に関するものを描くことができるのでは？
-ならそもそもbefore_screenを引数で受け取る必要もない気がする。
-一方通行だしボタンって。
 
-ここではnext_screenの値を返すしかできないね・・・viewに渡せない。
-Modelならviewを持っているので、
-Modelの中でview.next_screen = Button.push_and_get_next_screenにしようか
-'''
 class Button(Visible):
-    def __init__(self, init_x_pos, init_y_pos, name,size,next_screen):
+    def __init__(self, init_x_pos, init_y_pos, name,size):
         super().__init__(init_x_pos, init_y_pos, name,size)
-        self.next_screen = next_screen
-
-    def push_and_get_next_screen(self):
-        return self.next_screen
     
     #押された場所か内部かどうかを判定する
     def is_inner(self,mouse_pos):
@@ -155,7 +132,7 @@ class Model:
         self.ball = None
         self.visibles = []
 
-    #Controllerで呼び出すかも？な処理
+    #Controllerで呼び出す.
     def move(self,identifier_key):
         #キー入力に応じて移動させる
         if identifier_key == "right":
@@ -172,8 +149,8 @@ class Model:
                 self.blocks[i][j] = Block()
 
     #ボタンを作成して、visiblesに追加する
-    def create_button(self,x_pos,y_pos,name,size,next_screen):
-        bt = Button(x_pos,y_pos,name,size,next_screen)
+    def create_button(self,x_pos,y_pos,name,size):
+        bt = Button(x_pos,y_pos,name,size)
         self.visibles.append(bt)
 
     #画像を作成して、visiblesに追加する
@@ -219,8 +196,8 @@ class Model:
     def make_title(self):
         #ウィンドウサイズと同じ画像を作る
         self.create_picture(0,0,"title",(700,800))
-        self.create_button(200,500,"start",(260,80),"game_play")
-        self.create_button(200,600,"score",(260,80),"ranking")
+        self.create_button(200,500,"start",(260,80))
+        self.create_button(200,600,"score",(260,80))
         #描画順を調整する
         self.sort_visual_order()
     
