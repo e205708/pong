@@ -182,6 +182,12 @@ class Model:
                     ball.turn_y()
                     self.blocks[e][b].delete()
 
+                    #ゲームクリアした時の処理
+                    if self.is_clear():
+                        for v in self.visibles:
+                            v.delete()
+                        self.make_clear()
+
     #バーとボールが接触したかの判定とその場合の処理を書く。updateで呼び出す
     def interact_bar_ball(self,bar,ball):
         #もし接触していたら、
@@ -211,7 +217,16 @@ class Model:
             ball.turn_y()
         #下の壁に衝突したなら消す
         if 795 < ball.y_pos:
-            ball.delete()
+            ball.turn_y()
+
+    def is_clear(self):
+        for e in self.blocks:
+             for j in e:
+                 if j.is_appear == True:
+                     print("a")
+                     return False #ブロックがあればFalse
+        print("b")
+        return True
 
     #title画面を作る
     def make_title(self):
@@ -222,13 +237,21 @@ class Model:
         #描画順を調整する
         self.sort_visual_order()
     
+    #play画面を作る
     def make_game_play(self):
         self.create_picture(0,0,"play",(700,800))
         self.bar = Bar(300,700,"bar",(100,20),10,6)
-        self.ball = Ball(200,200,"ball",(30,30),3,3)
+        self.ball = Ball(200,200,"ball",(30,30),5,5)
         self.create_blocks()
         self.visibles.append(self.bar)
         self.visibles.append(self.ball)
+        self.sort_visual_order()
+
+    #クリア画面を作る
+    def make_clear(self):
+        print("abab")
+        self.create_picture(0,0,"clear",(700,800))
+        self.create_button(200,500,"start",(260,80))
         self.sort_visual_order()
 
     #描画する順番を調整する
@@ -255,8 +278,7 @@ class Model:
                 v.move()
                 self.interact_bar_ball(self.bar,v)
                 self.interact_block_ball(v)
-                self.interact_wall_ball(v)
-                
+                self.interact_wall_ball(v)                
                
             
             #ここにアイテムに関する、毎回実行した方が良さそうなものをまとめておく

@@ -20,7 +20,7 @@ class View:
         #self.sprites["bigger_item"] = pygame.image.load("bigger_item.png")
         self.sprites["title"] = pygame.image.load("sprites/title.png")
         self.sprites["play"] = pygame.image.load("sprites/play.png")
-        #self.sprites["stageclear"] = pygame.image.load("stageclear.png")
+        self.sprites["clear"] = pygame.image.load("sprites/clear.png")
         #self.sprites["gameover"] = pygame.image.load("gameover.png")
         self.sprites["start"] = pygame.image.load("sprites/start.png")
         self.sprites["score"] = pygame.image.load("sprites/score.png")
