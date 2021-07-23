@@ -111,8 +111,8 @@ class Block(Visible):
 
     #ブロックとボールの当たり判定
     def hit_block(self,ball):
-        if self.x_pos <ball.x_pos< self.x_pos+140:
-            if self.y_pos < ball.y_pos <self.y_pos + 40:
+        if self.get_x_pos() <ball.get_x_pos()< self.get_x_pos() + 140:
+            if self.get_y_pos() < ball.get_y_pos() <self.get_y_pos() + 40:
                 return True
 
     #Itemオブジェクトを引数に持つ
@@ -140,7 +140,7 @@ class Model:
 
     def __init__(self,view):
         self.view = view
-        self.blocks = [[None]*5]*4 #２次元配列
+        self.blocks = [[None for i in range(5)] for j in range(4)] #２次元配列
         self.bar = None
         self.visibles = []
 
@@ -157,8 +157,16 @@ class Model:
         for i in range(4):
             for j in range(5):
                 #iとjの値を参考にBlockの座標を決める
-                self.blocks[i][j] = Block((j)*140,(i)*40,"block",(140,40))
-                self.visibles.append(self.blocks[i][j])
+                bl = Block(j*140,i*40,"block",(140,40))
+                self.blocks[i][j] = bl
+                self.visibles.append(bl)
+                print(str(i) + str(j))
+                print(self.blocks[i][j].x_pos)
+                print(self.blocks[i][j].y_pos)
+        
+
+                
+
 
     #ボタンを作成して、visiblesに追加する
     def create_button(self,x_pos,y_pos,name,size):
@@ -174,31 +182,13 @@ class Model:
     def interact_block_ball(self,ball):
         for e in range(4):
             for b in range(5):
-                '''
-                #左側からぶつかった時
-                if b.x_pos + 140 > ball.x_pos + 30 > b.x_pos:
-                    if b.y_pos < ball.y_pos < b.y_pos + 40:
-                        b.delete()
-                        ball.turn_x()
-                #右側からぶつかった時
-                if b.x_pos < ball.x_pos < b.x_pos + 140:
-                    if b.y_pos < ball.y_pos < b.y_pos + 40:
-                        b.delete()
-                        ball.turn_x()
-                '''
+                
                 #下側からぶつかった時
                 if self.blocks[e][b].is_appear == True and self.blocks[e][b].hit_block(ball):
-                    if self.blocks[e][b].is_appear == True:
-                        ball.turn_y()
-                        print("a")
+                    ball.turn_y()
+                    print(str(e)+str(b))
+                    print(self.blocks[e][b].get_y_pos())
                     self.blocks[e][b].delete()
-                '''
-                #上側からぶつかった時
-                if b.x_pos <ball.x_pos< b.x_pos+140:
-                    if ball.y_pos + 30 < b.y_pos + 40:
-                        b.delete()
-                        ball.turn_y()
-                '''
 
     #バーとボールが接触したかの判定とその場合の処理を書く。updateで呼び出す
     def interact_bar_ball(self,bar,ball):
