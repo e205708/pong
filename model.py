@@ -160,13 +160,7 @@ class Model:
                 bl = Block(j*140,i*40,"block",(140,40))
                 self.blocks[i][j] = bl
                 self.visibles.append(bl)
-                print(str(i) + str(j))
-                print(self.blocks[i][j].x_pos)
-                print(self.blocks[i][j].y_pos)
         
-
-                
-
 
     #ボタンを作成して、visiblesに追加する
     def create_button(self,x_pos,y_pos,name,size):
@@ -186,14 +180,12 @@ class Model:
                 #下側からぶつかった時
                 if self.blocks[e][b].is_appear == True and self.blocks[e][b].hit_block(ball):
                     ball.turn_y()
-                    print(str(e)+str(b))
-                    print(self.blocks[e][b].get_y_pos())
                     self.blocks[e][b].delete()
 
     #バーとボールが接触したかの判定とその場合の処理を書く。updateで呼び出す
     def interact_bar_ball(self,bar,ball):
         #もし接触していたら、
-        if bar.x_pos < ball.x_pos < bar.x_pos + 100:
+        if bar.x_pos -10< ball.x_pos < bar.x_pos + bar.size[0]:#-10しているのは判定の微調整のため
             if  bar.y_pos  < ball.y_pos + 30 < bar.y_pos + 20:
                 ball.turn_y()
 
@@ -231,11 +223,13 @@ class Model:
         self.sort_visual_order()
     
     def make_game_play(self):
-        self.bar = Bar(10,700,"bar",(100,20),10,5)
-        self.ball = Ball(200,200,"ball",(30,30),1,1)
+        self.create_picture(0,0,"play",(700,800))
+        self.bar = Bar(300,700,"bar",(100,20),10,6)
+        self.ball = Ball(200,200,"ball",(30,30),3,3)
         self.create_blocks()
         self.visibles.append(self.bar)
         self.visibles.append(self.ball)
+        self.sort_visual_order()
 
     #描画する順番を調整する
     def sort_visual_order(self):
