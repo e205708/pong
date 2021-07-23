@@ -21,11 +21,11 @@ class View:
         self.sprites["title"] = pygame.image.load("sprites/title.png")
         self.sprites["play"] = pygame.image.load("sprites/play.png")
         self.sprites["clear"] = pygame.image.load("sprites/clear.png")
-        #self.sprites["gameover"] = pygame.image.load("gameover.png")
+        self.sprites["gameover"] = pygame.image.load("sprites/gameover.png")
         self.sprites["start"] = pygame.image.load("sprites/start.png")
         self.sprites["score"] = pygame.image.load("sprites/score.png")
-        #self.sprites["retry_button"] = pygame.image.load("retry_button.png")
-        #self.sprites["exit_button"] = pygame.image.load("exit_button.png")
+        self.sprites["retry"] = pygame.image.load("sprites/retry.png")
+        self.sprites["exit"] = pygame.image.load("sprites/exit.png")
 
 
     def draw(self,visible_obj):
@@ -74,7 +74,7 @@ class App:
                 elif event.key == K_RIGHT:
                     self.controller.right_key_down()
             
-            #タイトル画面でボタンが押された時の処理
+            #ボタンが押された時の処理
             if event.type == pygame.MOUSEBUTTONDOWN:
                 for e in self.model.visibles:
                     if e.name == "start" and e.is_inner(event.pos): #スタートボタンが押された時
@@ -82,6 +82,16 @@ class App:
                         for s in self.model.visibles:
                             s.delete()
                         self.model.make_game_play() #プレイ画面を作る
+                    
+                    if e.name == "retry" and e.is_inner(event.pos): #retryボタンが押されたら
+                        #画面に表示されている要素を全て削除する
+                        for s in self.model.visibles:
+                            s.delete()
+                        self.model.make_game_play() #プレイ画面を作る
+
+                    if e.name == "exit" and e.is_inner(event.pos):
+                        pygame.quit()
+                        sys.exit()  
 
     def event_loop(self):
         clock = pygame.time.Clock()

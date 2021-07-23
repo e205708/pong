@@ -217,8 +217,9 @@ class Model:
             ball.turn_y()
         #下の壁に衝突したなら消す
         if 795 < ball.y_pos:
-            ball.turn_y()
+            ball.delete()
 
+    #clearかどうか
     def is_clear(self):
         for e in self.blocks:
              for j in e:
@@ -226,6 +227,14 @@ class Model:
                      print("a")
                      return False #ブロックがあればFalse
         print("b")
+        return True
+
+    #gameoverかどうか
+    def is_gameover(self):
+        for v in self.visibles:
+            if v.name == "ball" and v.is_appear == True:
+                return False
+
         return True
 
     #title画面を作る
@@ -249,10 +258,15 @@ class Model:
 
     #クリア画面を作る
     def make_clear(self):
-        print("abab")
         self.create_picture(0,0,"clear",(700,800))
         self.create_button(200,500,"start",(260,80))
         self.sort_visual_order()
+
+    #ゲームオーバー画面を作る
+    def make_gameover(self):
+        self.create_picture(0,0,"gameover",(700,800))
+        self.create_button(200,500,"retry",(260,80))
+        self.create_button(200,600,"exit",(260,80))
 
     #描画する順番を調整する
     def sort_visual_order(self):
@@ -278,7 +292,13 @@ class Model:
                 v.move()
                 self.interact_bar_ball(self.bar,v)
                 self.interact_block_ball(v)
-                self.interact_wall_ball(v)                
+                self.interact_wall_ball(v)      
+
+                #ゲームオーバーか調べる
+                if self.is_gameover():
+                    for v in self.visibles:
+                        v.delete()
+                    self.make_gameover()          
                
             
             #ここにアイテムに関する、毎回実行した方が良さそうなものをまとめておく
