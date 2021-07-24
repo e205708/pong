@@ -138,6 +138,7 @@ class Button(Visible):
 class Model:
 
     def __init__(self,view):
+        self.clear_times = 0
         self.view = view
         self.blocks = [[None for i in range(5)] for j in range(4)] #２次元配列
         self.bar = None
@@ -161,6 +162,11 @@ class Model:
                 self.visibles.append(bl)
         
 
+    #ブロックにアイテムを持たせる関数
+    def set_item(self,line,row,item_type):
+        item = Item(300,300,"item",(30,30),0,1,item_type)
+        self.blocks[line][row].set_item(item)
+
     #ボタンを作成して、visiblesに追加する
     def create_button(self,x_pos,y_pos,name,size):
         bt = Button(x_pos,y_pos,name,size)
@@ -179,7 +185,7 @@ class Model:
                 #下側からぶつかった時
                 if self.blocks[e][b].is_appear == True and self.blocks[e][b].hit_block(ball):
                     ball.turn_y()
-                    
+
                     #アイテムを持っていたらアイテムを出現させる
                     if(self.blocks[e][b].has_item()):
                         item = Item(self.blocks[e][b].x_pos,self.blocks[e][b].y_pos,"item",(30,30),0,1,self.blocks[e][b].get_item_type())
@@ -209,14 +215,14 @@ class Model:
                     for e in self.visibles:
                         if e.name =="ball":
                             if e.x_speed < 0:
-                                e.x_speed = e.x_speed - 5
+                                e.x_speed = e.x_speed - 5 - self.clear_times
                             else:
-                                e.x_speed = e.x_speed + 5
+                                e.x_speed = e.x_speed + 5 + self.clear_times
 
                             if e.y_speed < 0:
-                                e.y_speed = e.y_speed - 5
+                                e.y_speed = e.y_speed - 5 - self.clear_times
                             else:
-                                e.y_speed = e.y_speed + 5
+                                e.y_speed = e.y_speed + 5 + self.clear_times
 
                     item.delete()
 
@@ -276,13 +282,12 @@ class Model:
     def make_game_play(self):
         self.create_picture(0,0,"play",(700,800))
         self.bar = Bar(300,700,"bar",(100,20),6)
-        self.ball = Ball(200,200,"ball",(30,30),5,5)
+        self.ball = Ball(200,200,"ball",(30,30),5 + self.clear_times*2,5 + self.clear_times*2)
         self.create_blocks()
 
-        item_1 = Item(300,300,"item",(30,30),0,1,"twin")
-        self.visibles.append(item_1)
-
-        self.blocks[3][2].set_item(item_1)
+        self.set_item(3,2,"twin")
+        self.set_item(2,1,"speedup")
+        self.set_item(0,2,"bigger")
 
         self.visibles.append(self.bar)
         self.visibles.append(self.ball)
@@ -294,11 +299,15 @@ class Model:
         self.create_button(200,500,"start",(260,80))
         self.sort_visual_order()
 
+        self.clear_times += 1
+
     #ゲームオーバー画面を作る
     def make_gameover(self):
         self.create_picture(0,0,"gameover",(700,800))
         self.create_button(200,500,"retry",(260,80))
         self.create_button(200,600,"exit",(260,80))
+
+        self.clear_times = 0
 
     #描画する順番を調整する
     def sort_visual_order(self):
