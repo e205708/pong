@@ -67,9 +67,8 @@ class Item(Ball):
 class Bar(Visible):
 
     #lengthとx_speedを追加。
-    def __init__(self, init_x_pos, init_y_pos, name, size, length, x_speed):
+    def __init__(self, init_x_pos, init_y_pos, name, size,x_speed):
         super().__init__(init_x_pos, init_y_pos, name, size)
-        self.length = length
         self.x_speed = x_speed
 
     #バーの座標に制限をもうける。バーを動かせるならTrueを返す
@@ -184,8 +183,7 @@ class Model:
 
                     #ゲームクリアした時の処理
                     if self.is_clear():
-                        for v in self.visibles:
-                            v.delete()
+                        self.visibles_clear()
                         self.make_clear()
 
     #バーとボールが接触したかの判定とその場合の処理を書く。updateで呼び出す
@@ -197,15 +195,36 @@ class Model:
 
     #バーとアイテムが接触したかの判定とその場合の処理を書く。updateで呼び出す
     def interact_bar_item(self,item):
-        #item.nameに応じてif分で処理を変えていく方がいいかもしれないね。
-        #そしたらitemのtouch()はいらなくなるかも？
-        #ここも接触したアイテムオブジェクトを特定する必要があるね・・・
-        if item.get_item_type() == "speedup":
-            return
-        elif item.get_item_type() == "twin":
-            return
-        elif item.get_item_type() == "bigger":
-            return
+        #もし接触していたら、
+        if self.bar.x_pos -10< item.x_pos < self.bar.x_pos + self.bar.size[0]:#-10しているのは判定の微調整のため
+            if  self.bar.y_pos  < item.y_pos + 30 < self.bar.y_pos + 20:
+                # アイテムの種類によって処理を変える。
+                if item.get_item_type() == "speedup":
+                    for e in self.visibles:
+                        if e.name =="ball":
+                            if e.x_speed < 0:
+                                e.x_speed = e.x_speed - 5
+                            else:
+                                e.x_speed = e.x_speed + 5
+
+                            if e.y_speed < 0:
+                                e.y_speed = e.y_speed - 5
+                            else:
+                                e.y_speed = e.y_speed + 5
+
+                    item.delete()
+
+                elif item.get_item_type() == "twin":
+                    return
+                elif item.get_item_type() == "bigger":
+                    x_pos = self.bar.get_x_pos()
+                    y_pos = self.bar.get_y_pos()
+                    self.bar.delete()
+
+                    self.bar = Bar(x_pos,y_pos,"bar",(150,20),6)
+                    self.visibles.append(self.bar)
+
+                    item.delete()
 
     #壁とボールが接触したかの判定とその場合の処理を書く。updateで呼び出す
     def interact_wall_ball(self,ball):
@@ -224,15 +243,13 @@ class Model:
         for e in self.blocks:
              for j in e:
                  if j.is_appear == True:
-                     print("a")
                      return False #ブロックがあればFalse
-        print("b")
         return True
 
     #gameoverかどうか
     def is_gameover(self):
         for v in self.visibles:
-            if v.name == "ball" and v.is_appear == True:
+            if v.name == "ball" and v.is_appear == True or self.is_clear()==True:
                 return False
 
         return True
@@ -249,9 +266,13 @@ class Model:
     #play画面を作る
     def make_game_play(self):
         self.create_picture(0,0,"play",(700,800))
-        self.bar = Bar(300,700,"bar",(100,20),10,6)
+        self.bar = Bar(300,700,"bar",(100,20),6)
         self.ball = Ball(200,200,"ball",(30,30),5,5)
         self.create_blocks()
+
+        #item_1 = Item(300,300,"item",(30,30),0,1,"speedup")
+        #self.visibles.append(item_1)
+
         self.visibles.append(self.bar)
         self.visibles.append(self.ball)
         self.sort_visual_order()
@@ -278,6 +299,10 @@ class Model:
                 self.visibles[0] = e
                 self.visibles.append(temp)
 
+    #全てのvisiblesを削除する
+    def visibles_clear(self):
+        for v in self.visibles:
+            v.delete()
 
     #おそらく、毎秒呼び出すような。そんな感じの処理をまとめる。
     def update(self):
@@ -296,16 +321,17 @@ class Model:
 
                 #ゲームオーバーか調べる
                 if self.is_gameover():
-                    for v in self.visibles:
-                        v.delete()
+                    self.visibles_clear()
                     self.make_gameover()          
                
             
             #ここにアイテムに関する、毎回実行した方が良さそうなものをまとめておく
             if v.get_name() == "item":
+                v.move()
                 self.interact_bar_item(v)
 
             if v.is_appear == False:
+                print(v.name)
                 self.visibles.remove(v)
             
 

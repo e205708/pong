@@ -15,9 +15,9 @@ class View:
         self.sprites["ball"] = pygame.image.load("sprites/ball_small.png")
         self.sprites["block"] = pygame.image.load("sprites/block_small.png")
         #self.sprites["special_block"] = pygame.image.load("special_block.png")
-        #self.sprites["speed_item"] = pygame.image.load("speed_item.png")
+        self.sprites["speedup"] = pygame.image.load("sprites/item_ballspeed_small.png")
         #self.sprites["clone_item"] = pygame.image.load("clone_item.png")
-        #self.sprites["bigger_item"] = pygame.image.load("bigger_item.png")
+        self.sprites["bigger"] = pygame.image.load("sprites/item_longver_small.png")
         self.sprites["title"] = pygame.image.load("sprites/title.png")
         self.sprites["play"] = pygame.image.load("sprites/play.png")
         self.sprites["clear"] = pygame.image.load("sprites/clear.png")
@@ -29,7 +29,10 @@ class View:
 
 
     def draw(self,visible_obj):
-        img = self.sprites[visible_obj.name]
+        if(visible_obj.name == "item"):
+            img = self.sprites[visible_obj.item_type]
+        else:
+            img = self.sprites[visible_obj.name]
         img_trasform = pygame.transform.scale(img,visible_obj.size) #画像サイズの調整
         self.screen.blit(img_trasform,(visible_obj.x_pos,visible_obj.y_pos))
 
@@ -79,14 +82,12 @@ class App:
                 for e in self.model.visibles:
                     if e.name == "start" and e.is_inner(event.pos): #スタートボタンが押された時
                         #画面に表示されている要素を全て削除する
-                        for s in self.model.visibles:
-                            s.delete()
+                        self.model.visibles_clear()
                         self.model.make_game_play() #プレイ画面を作る
                     
                     if e.name == "retry" and e.is_inner(event.pos): #retryボタンが押されたら
                         #画面に表示されている要素を全て削除する
-                        for s in self.model.visibles:
-                            s.delete()
+                        self.model.visibles_clear()
                         self.model.make_game_play() #プレイ画面を作る
 
                     if e.name == "exit" and e.is_inner(event.pos):
