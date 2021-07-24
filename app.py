@@ -16,7 +16,7 @@ class View:
         self.sprites["block"] = pygame.image.load("sprites/block_small.png")
         #self.sprites["special_block"] = pygame.image.load("special_block.png")
         self.sprites["speedup"] = pygame.image.load("sprites/item_ballspeed_small.png")
-        #self.sprites["clone_item"] = pygame.image.load("clone_item.png")
+        self.sprites["twin"] = pygame.image.load("sprites/item_ballplus_small.png")
         self.sprites["bigger"] = pygame.image.load("sprites/item_longver_small.png")
         self.sprites["title"] = pygame.image.load("sprites/title.png")
         self.sprites["play"] = pygame.image.load("sprites/play.png")

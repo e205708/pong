@@ -215,7 +215,10 @@ class Model:
                     item.delete()
 
                 elif item.get_item_type() == "twin":
-                    return
+                    ball = Ball(200,200,"ball",(30,30),5,5)
+                    self.visibles.append(ball)
+                    item.delete()
+                    
                 elif item.get_item_type() == "bigger":
                     x_pos = self.bar.get_x_pos()
                     y_pos = self.bar.get_y_pos()
@@ -270,8 +273,8 @@ class Model:
         self.ball = Ball(200,200,"ball",(30,30),5,5)
         self.create_blocks()
 
-        #item_1 = Item(300,300,"item",(30,30),0,1,"speedup")
-        #self.visibles.append(item_1)
+        item_1 = Item(300,300,"item",(30,30),0,1,"twin")
+        self.visibles.append(item_1)
 
         self.visibles.append(self.bar)
         self.visibles.append(self.ball)
