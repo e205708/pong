@@ -179,6 +179,12 @@ class Model:
                 #下側からぶつかった時
                 if self.blocks[e][b].is_appear == True and self.blocks[e][b].hit_block(ball):
                     ball.turn_y()
+                    
+                    #アイテムを持っていたらアイテムを出現させる
+                    if(self.blocks[e][b].has_item()):
+                        item = Item(self.blocks[e][b].x_pos,self.blocks[e][b].y_pos,"item",(30,30),0,1,self.blocks[e][b].get_item_type())
+                        self.visibles.append(item)
+
                     self.blocks[e][b].delete()
 
                     #ゲームクリアした時の処理
@@ -218,7 +224,7 @@ class Model:
                     ball = Ball(200,200,"ball",(30,30),5,5)
                     self.visibles.append(ball)
                     item.delete()
-                    
+
                 elif item.get_item_type() == "bigger":
                     x_pos = self.bar.get_x_pos()
                     y_pos = self.bar.get_y_pos()
@@ -275,6 +281,8 @@ class Model:
 
         item_1 = Item(300,300,"item",(30,30),0,1,"twin")
         self.visibles.append(item_1)
+
+        self.blocks[3][2].set_item(item_1)
 
         self.visibles.append(self.bar)
         self.visibles.append(self.ball)

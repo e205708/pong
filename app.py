@@ -14,7 +14,7 @@ class View:
         self.sprites["bar"] = pygame.image.load("sprites/bar_small.png")
         self.sprites["ball"] = pygame.image.load("sprites/ball_small.png")
         self.sprites["block"] = pygame.image.load("sprites/block_small.png")
-        #self.sprites["special_block"] = pygame.image.load("special_block.png")
+        self.sprites["special_block"] = pygame.image.load("sprites/special_block_small.png")
         self.sprites["speedup"] = pygame.image.load("sprites/item_ballspeed_small.png")
         self.sprites["twin"] = pygame.image.load("sprites/item_ballplus_small.png")
         self.sprites["bigger"] = pygame.image.load("sprites/item_longver_small.png")
@@ -33,6 +33,11 @@ class View:
             img = self.sprites[visible_obj.item_type]
         else:
             img = self.sprites[visible_obj.name]
+
+        if(visible_obj.name == "block"):
+            if visible_obj.has_item():
+                img = self.sprites["special_block"]
+                
         img_trasform = pygame.transform.scale(img,visible_obj.size) #画像サイズの調整
         self.screen.blit(img_trasform,(visible_obj.x_pos,visible_obj.y_pos))
 
