@@ -22,6 +22,11 @@ class Visible:
     def get_name(self):
         return self.name
 
+class Text(Visible):
+    def __init__(self, init_x_pos, init_y_pos, name, size,text):
+        super().__init__(init_x_pos, init_y_pos, name, size)
+        self.text = text
+
 class Ball(Visible):
 
     #x_speedとy_speedが追加
@@ -139,6 +144,7 @@ class Model:
 
     def __init__(self,view):
         self.clear_times = 0
+        self.score = 0 #現在のゲームのスコアを示す。合計のスコアはクリア回数*固定スコア+score
         self.view = view
         self.blocks = [[None for i in range(5)] for j in range(4)] #２次元配列
         self.bar = None
@@ -191,6 +197,7 @@ class Model:
                         item = Item(self.blocks[e][b].x_pos,self.blocks[e][b].y_pos,"item",(30,30),0,1,self.blocks[e][b].get_item_type())
                         self.visibles.append(item)
 
+                    self.score += 300
                     self.blocks[e][b].delete()
 
                     #ゲームクリアした時の処理
@@ -306,6 +313,8 @@ class Model:
         self.create_picture(0,0,"gameover",(700,800))
         self.create_button(200,500,"retry",(260,80))
         self.create_button(200,600,"exit",(260,80))
+        text = Text(300,300,"text",(30,30),str(self.score))
+        self.visibles.append(text)
 
         self.clear_times = 0
 

@@ -31,14 +31,19 @@ class View:
     def draw(self,visible_obj):
         if(visible_obj.name == "item"):
             img = self.sprites[visible_obj.item_type]
+            img_trasform = pygame.transform.scale(img,visible_obj.size) #画像サイズの調整
+        elif(visible_obj.name=="text"):
+            font = pygame.font.Font(None, 55) 
+            img_trasform = font.render(visible_obj.text+"point",True,(255,255,255))
         else:
             img = self.sprites[visible_obj.name]
+            img_trasform = pygame.transform.scale(img,visible_obj.size) #画像サイズの調整
 
         if(visible_obj.name == "block"):
             if visible_obj.has_item():
                 img = self.sprites["special_block"]
-                
-        img_trasform = pygame.transform.scale(img,visible_obj.size) #画像サイズの調整
+                img_trasform = pygame.transform.scale(img,visible_obj.size) #画像サイズの調整
+
         self.screen.blit(img_trasform,(visible_obj.x_pos,visible_obj.y_pos))
 
     
