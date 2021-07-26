@@ -145,6 +145,7 @@ class Model:
     def __init__(self,view):
         self.clear_times = 0
         self.score = 0 #現在のゲームのスコアを示す。合計のスコアはクリア回数*固定スコア+score
+        self.scores = []
         self.view = view
         self.blocks = [[None for i in range(5)] for j in range(4)] #２次元配列
         self.bar = None
@@ -276,6 +277,24 @@ class Model:
 
         return True
 
+    #ファイルからスコアを読み込む
+    def read_scores(self):
+        with open("scores.txt") as f:
+            sc = [s.strip() for s in f.readlines()]
+            for e in sc:
+                self.scores.append(e)
+
+    #ファイルにスコアを書き込む
+    def set_scores(self):
+        #スコアの上位三つをファイルに書き込む
+        #900（改行)300(改行)0(改行)のような形だと思う
+        return
+
+    #現在のスコアをscoresに挿入する
+    def insert_scores(self):
+        #scoresの要素数が三つになるように調整する。
+        return
+
     #title画面を作る
     def make_title(self):
         #ウィンドウサイズと同じ画像を作る
@@ -317,6 +336,19 @@ class Model:
         self.visibles.append(text)
 
         self.clear_times = 0
+
+    #スコア画面を作る
+    def make_score(self):
+        self.read_scores()
+        self.create_picture(0,0,"title",(700,800))
+        text = Text(200,310,"text",(30,30),"High ")
+        self.visibles.append(text)
+        self.create_button(200,700,"start",(260,80))
+        for e in range(3):
+            text = Text(200,430+50*e,"text",(30,30),self.scores[e])
+            self.visibles.append(text)
+
+      
 
     #描画する順番を調整する
     def sort_visual_order(self):

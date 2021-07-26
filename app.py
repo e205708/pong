@@ -34,7 +34,7 @@ class View:
             img_trasform = pygame.transform.scale(img,visible_obj.size) #画像サイズの調整
         elif(visible_obj.name=="text"):
             font = pygame.font.Font(None, 55) 
-            img_trasform = font.render(visible_obj.text+"point",True,(255,255,255))
+            img_trasform = font.render(visible_obj.text+"point",True,(0,0,0))
         else:
             img = self.sprites[visible_obj.name]
             img_trasform = pygame.transform.scale(img,visible_obj.size) #画像サイズの調整
@@ -103,6 +103,10 @@ class App:
                     if e.name == "exit" and e.is_inner(event.pos):
                         pygame.quit()
                         sys.exit()  
+
+                    if e.name == "score" and e.is_inner(event.pos):
+                        self.model.visibles_clear()
+                        self.model.make_score()
 
     def event_loop(self):
         clock = pygame.time.Clock()
