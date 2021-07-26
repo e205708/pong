@@ -288,12 +288,22 @@ class Model:
     def set_scores(self):
         #スコアの上位三つをファイルに書き込む
         #900（改行)300(改行)0(改行)のような形だと思う
-        return
+        with open("scores.txt",mode = 'w') as f:
+            f.write('\n'.join(self.scores))
 
     #現在のスコアをscoresに挿入する
     def insert_scores(self):
         #scoresの要素数が三つになるように調整する。
-        return
+            sc = self.score
+            if sc > int(self.scores[0]):
+                self.scores.insert(0,str(sc))
+                self.scores.pop(-1)
+            elif sc > int(self.scores[1]):
+                self.scores.insert(1,str(sc))
+                self.scores.pop(-1)
+            elif sc > int(self.scores[2]):
+                self.scores.insert(2,str(sc))
+                self.scores.pop(-1)          
 
     #title画面を作る
     def make_title(self):
@@ -301,6 +311,9 @@ class Model:
         self.create_picture(0,0,"title",(700,800))
         self.create_button(200,500,"start",(260,80))
         self.create_button(200,600,"score",(260,80))
+
+        self.read_scores()
+        
         #描画順を調整する
         self.sort_visual_order()
     
@@ -335,11 +348,15 @@ class Model:
         text = Text(300,300,"text",(30,30),str(self.score))
         self.visibles.append(text)
 
+        #スコアを記録する
+        self.insert_scores()
+        self.set_scores()
+
+        self.score = 0
         self.clear_times = 0
 
     #スコア画面を作る
     def make_score(self):
-        self.read_scores()
         self.create_picture(0,0,"title",(700,800))
         text = Text(200,310,"text",(30,30),"High ")
         self.visibles.append(text)
